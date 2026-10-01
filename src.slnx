@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/ToyRobotSim.csproj" />
+  <Project Path="ToyRobotSim.Test/ToyRobotSim.Tests.csproj" Id="acd59ebf-feaf-4940-812d-07e2e9404ab0" />
+</Solution>
