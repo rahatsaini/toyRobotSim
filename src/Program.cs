@@ -18,25 +18,29 @@ if (args.Length == 1 && !File.Exists(args[0]))
     return;
 }
 
-try
-{
-    var game = new Game();
+var game = new Game();
 
-    if (args.Length == 1)
+if (args.Length == 1)
+{
+    // The File.Exists check above gives a friendly message for the common case, but the file
+    // can still fail to open or read: deleted after the check, locked by another process,
+    // or no permission to read it.
+    // This is an AI suggesion to handle those cases gracefully.
+    try
     {
         using var file = new StreamReader(args[0]);
         game.Start(file, showPrompt: false);
     }
-    else
+    catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
     {
-        // No prompt when commands are piped in, e.g. Get-Content commands.txt | dotnet run
-        game.Start(Console.In, showPrompt: !Console.IsInputRedirected);
+        WriteError($"Could not read file '{args[0]}': {ex.Message}");
+        Environment.ExitCode = 1;
     }
 }
-catch (ArgumentOutOfRangeException ex)
+else
 {
-    WriteError($"An error occurred: {ex.Message}");
-    Environment.ExitCode = 1;
+    // No prompt when commands are piped in, e.g. Get-Content commands.txt | dotnet run
+    game.Start(Console.In, showPrompt: !Console.IsInputRedirected);
 }
 
 static void WriteError(string message)

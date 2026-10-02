@@ -99,5 +99,23 @@ namespace ToyRobotSim.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => new Robot(-1));
         }
 
+        [Fact]
+        public void Place_UndefinedDirection_ThrowsAndLeavesRobotUnplaced()
+        {
+            var robot = new Robot();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => robot.Place(0, 0, (Direction)99));
+            Assert.False(robot.IsPlaced);
+        }
+
+        [Fact]
+        public void Place_UndefinedDirectionWhenAlreadyPlaced_KeepsCurrentState()
+        {
+            var robot = new Robot();
+            robot.Place(1, 2, Direction.East);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => robot.Place(3, 3, (Direction)99));
+            Assert.Equal("Robot is at [1,2] facing EAST", robot.Report());
+        }
     }
 }

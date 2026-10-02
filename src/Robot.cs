@@ -26,6 +26,13 @@
 
         public string? Place(int x, int y, Direction facing)
         {
+            // a value like (Direction)99. Game never passes one, so this is a programming error.
+            // this is an AI suggestion to make the code more robust, but it is not strictly necessary for the brief.
+            if (!Enum.IsDefined(facing))
+            {
+                throw new ArgumentOutOfRangeException(nameof(facing), facing, "Facing must be a defined direction");
+            }
+
             if (!IsInBounds(x, y))
             {
                 return "Invalid placement";

@@ -11,7 +11,7 @@ dotnet run --project src                                 # type commands, Ctrl+Z
 dotnet run --project src -- test-data/example-3.txt      # read commands from a file
 ```
 
-With a file, the app runs every command, prints the output and exits. A missing file prints `File not found` and exits with code 1. In Visual Studio, set the file path (in full) under **Project Properties > Debug > launch profiles**.
+With a file, the app runs every command, prints the output and exits. A missing or unreadable file (for example, locked by another program) prints an error and exits with code 1. In Visual Studio, set the file path (in full) under **Project Properties > Debug > launch profiles**.
 
 ```
 PLACE 1,2,EAST
