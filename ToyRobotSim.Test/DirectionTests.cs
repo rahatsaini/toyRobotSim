@@ -5,21 +5,21 @@ namespace ToyRobotSim.Tests
     public class DirectionTests
     {
         [Theory]
-        [InlineData(Direction.NORTH, Direction.WEST)]
-        [InlineData(Direction.WEST, Direction.SOUTH)]
-        [InlineData(Direction.SOUTH, Direction.EAST)]
-        [InlineData(Direction.EAST, Direction.NORTH)]
-        public void TurnLeft_GoesAnticlockwise(Direction start, Direction expected)
+        [InlineData(Direction.North, Direction.West)]
+        [InlineData(Direction.West, Direction.South)]
+        [InlineData(Direction.South, Direction.East)]
+        [InlineData(Direction.East, Direction.North)]
+        public void TurnLeft_EachDirection_TurnsAnticlockwise(Direction start, Direction expected)
         {
             Assert.Equal(expected, start.TurnLeft());
         }
 
         [Theory]
-        [InlineData(Direction.NORTH, Direction.EAST)]
-        [InlineData(Direction.EAST, Direction.SOUTH)]
-        [InlineData(Direction.SOUTH, Direction.WEST)]
-        [InlineData(Direction.WEST, Direction.NORTH)]
-        public void TurnRight_GoesClockwise(Direction start, Direction expected)
+        [InlineData(Direction.North, Direction.East)]
+        [InlineData(Direction.East, Direction.South)]
+        [InlineData(Direction.South, Direction.West)]
+        [InlineData(Direction.West, Direction.North)]
+        public void TurnRight_EachDirection_TurnsClockwise(Direction start, Direction expected)
         {
             Assert.Equal(expected, start.TurnRight());
         }
