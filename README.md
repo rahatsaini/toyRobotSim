@@ -82,6 +82,9 @@ test-data/              command files (*.txt) with expected output (*.expected)
 3. **Build the MVP.** The five commands working from the console, checked against the brief's examples.
 4. **Add tests.** Unit tests for each class. Code reviews found bugs, such as `PLACE 1,2,1` being accepted as EAST and `MOVE 5` still moving the robot. I fixed them and added tests so they can't come back.
 5. **Refactor.** With the tests in place: turning moved to extension methods, one type per file, PascalCase enums, read-only robot state, constants for repeated strings, narrower exception handling, and an input loop that can read from a file.
+6. **Pull request review.** When I raised a pull request, I used GitHub Copilot to review it and fixed the high-priority suggestions:
+   - **Unhandled file errors.** A file that is locked, deleted after the existence check, or unreadable crashed the app with a stack trace. It now prints a clear error and exits with code 1.
+   - **Invalid directions through the public API.** `Place(0, 0, (Direction)99)` created a robot facing an undefined direction. `Place` now rejects it before changing any state, with new tests covering it.
 
 ### Trade-offs
 
@@ -95,7 +98,7 @@ test-data/              command files (*.txt) with expected output (*.expected)
 
 ## Use of AI
 
-I used **Claude** (Anthropic), through the Claude Code desktop app, as an assistant throughout this project. The full conversation is attached with this submission. The prompts below are quoted from it as I typed them.
+I used **Claude** (Anthropic), through the Claude Code desktop app, as an assistant throughout this project, and **GitHub Copilot** to review my pull request. The full conversation is attached with this submission. The prompts below are quoted from it as I typed them.
 
 ### What AI was used for
 
@@ -107,6 +110,7 @@ I used **Claude** (Anthropic), through the Claude Code desktop app, as an assist
 | GRID command | Wrote `GridRenderer`, its tests and the compass labels | Proposed the feature, chose the layout (north at the top, N/S/E/W labels) |
 | Refactoring | Updated the code after I renamed the enums to PascalCase, applied C# convention fixes, and added reading commands from a file | Chose what to change. I kept my own `HandlePlace` logic where I preferred it |
 | Test data | Wrote the `test-data` files and expected outputs | Decided what test data meant for the brief, and had automated test-data tests removed as unnecessary |
+| Pull request review | GitHub Copilot reviewed the pull request. Claude reproduced the two high-priority issues, wrote failing tests and applied the fixes | Raised the PR, chose which suggestions to act on, and reviewed the fixes |
 | README | Drafted this README from my outline and direction | Set the structure, the development process steps and the trade-offs to cover |
 
 ### Prompts used
