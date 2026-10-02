@@ -1,4 +1,20 @@
 <Solution>
+  <Folder Name="/test-data/">
+    <File Path="test-data/before-place.expected" />
+    <File Path="test-data/before-place.txt" />
+    <File Path="test-data/edges.expected" />
+    <File Path="test-data/edges.txt" />
+    <File Path="test-data/example-1.expected" />
+    <File Path="test-data/example-1.txt" />
+    <File Path="test-data/example-2.expected" />
+    <File Path="test-data/example-2.txt" />
+    <File Path="test-data/example-3.expected" />
+    <File Path="test-data/example-3.txt" />
+    <File Path="test-data/invalid-input.expected" />
+    <File Path="test-data/invalid-input.txt" />
+    <File Path="test-data/walk-perimeter.expected" />
+    <File Path="test-data/walk-perimeter.txt" />
+  </Folder>
   <Project Path="src/ToyRobotSim.csproj" />
   <Project Path="ToyRobotSim.Test/ToyRobotSim.Tests.csproj" Id="acd59ebf-feaf-4940-812d-07e2e9404ab0" />
 </Solution>

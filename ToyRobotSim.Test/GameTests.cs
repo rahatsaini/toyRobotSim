@@ -16,55 +16,19 @@ namespace ToyRobotSim.Tests
         }
 
         [Fact]
-        public void Report_ReturnsUpdatedPosition()
-        {
-            var game = new Game();
-            game.Play("PLACE 0,0,NORTH");
-            game.Play("MOVE");
-            var report = game.Play("REPORT");
-            Assert.NotNull(report);
-            Assert.Equal("Robot is at [0,1] facing NORTH", report);
-        }
-
-        [Fact]
-        public void Report_ReturnsUpdatedPositionAfterLeftTurn()
-        {
-            var game = new Game();
-            game.Play("PLACE 0,0,NORTH");
-            game.Play("LEFT");
-            var report = game.Play("REPORT");
-            Assert.NotNull(report);
-            Assert.Equal("Robot is at [0,0] facing WEST", report);
-        }
-
-        [Fact]
-        public void Report_ReturnsUpdatedPositionAfterSequence()
-        {
-            var game = new Game();
-            game.Play("PLACE 1,2,EAST");
-            game.Play("MOVE");
-            game.Play("MOVE");
-            game.Play("LEFT");
-            game.Play("MOVE");
-            var report = game.Play("REPORT");
-            Assert.NotNull(report);
-            Assert.Equal("Robot is at [3,3] facing NORTH", report);
-        }
-
-        [Fact]
-        public void Should_MoveRobotNorth()
+        public void Report_BriefExample1_ReturnsZeroOneNorth()
         {
             Assert.Equal("Robot is at [0,1] facing NORTH", Run("PLACE 0,0,NORTH", "MOVE", "REPORT"));
         }
 
         [Fact]
-        public void Should_RobotTurnLeft()
+        public void Report_BriefExample2_ReturnsZeroZeroWest()
         {
             Assert.Equal("Robot is at [0,0] facing WEST", Run("PLACE 0,0,NORTH", "LEFT", "REPORT"));
         }
 
         [Fact]
-        public void Should_RobotMoveAndTurn()
+        public void Report_BriefExample3_ReturnsThreeThreeNorth()
         {
             Assert.Equal("Robot is at [3,3] facing NORTH",
                 Run("PLACE 1,2,EAST", "MOVE", "MOVE", "LEFT", "MOVE", "REPORT"));
@@ -72,19 +36,19 @@ namespace ToyRobotSim.Tests
 
 
         [Fact]
-        public void Report_BeforePlace_ReturnsNull()
+        public void Report_BeforePlace_ReturnsNotPlaced()
         {
-            Assert.Null(Run("REPORT"));
+            Assert.Equal("Robot is not placed", Run("REPORT"));
         }
 
         [Fact]
-        public void Commands_BeforePlace_AreIgnored()
+        public void Commands_BeforePlace_ReturnNotPlaced()
         {
-            Assert.Null(Run("MOVE", "LEFT", "RIGHT", "REPORT"));
+            Assert.Equal("Robot is not placed", Run("MOVE", "LEFT", "RIGHT", "REPORT"));
         }
 
         [Fact]
-        public void Commands_BeforePlace_DoNotAffectLaterPlace()
+        public void Place_AfterIgnoredCommands_PlacesRobot()
         {
             Assert.Equal("Robot is at [1,1] facing EAST", Run("MOVE", "LEFT", "PLACE 1,1,EAST", "REPORT"));
         }
@@ -98,17 +62,17 @@ namespace ToyRobotSim.Tests
         [InlineData("PLACE 0,-1,NORTH")]
         public void Place_OffTable_IsIgnored(string place)
         {
-            Assert.Null(Run(place, "REPORT"));
+            Assert.Equal("Robot is not placed", Run(place, "REPORT"));
         }
 
         [Fact]
-        public void Place_Again_MovesRobot()
+        public void Place_WhenAlreadyPlaced_MovesRobot()
         {
             Assert.Equal("Robot is at [3,3] facing SOUTH", Run("PLACE 0,0,NORTH", "PLACE 3,3,SOUTH", "REPORT"));
         }
 
         [Fact]
-        public void Place_InvalidSecondPlace_KeepsCurrentPosition()
+        public void Place_OffTableWhenAlreadyPlaced_KeepsCurrentPosition()
         {
             Assert.Equal("Robot is at [1,1] facing EAST", Run("PLACE 1,1,EAST", "PLACE 9,9,NORTH", "REPORT"));
         }
@@ -122,7 +86,7 @@ namespace ToyRobotSim.Tests
         [InlineData("PLACE")]
         public void Place_Malformed_IsIgnored(string place)
         {
-            Assert.Null(Run(place, "REPORT"));
+            Assert.Equal("Robot is not placed", Run(place, "REPORT"));
         }
 
         // --- MOVE: must not fall off any edge ---
@@ -138,7 +102,7 @@ namespace ToyRobotSim.Tests
         }
 
         [Fact]
-        public void Move_AfterIgnoredMove_StillWorks()
+        public void Move_AfterIgnoredMove_MovesRobot()
         {
             Assert.Equal("Robot is at [1,0] facing EAST", Run("PLACE 0,0,WEST", "MOVE", "LEFT", "LEFT", "MOVE", "REPORT"));
         }
@@ -155,13 +119,13 @@ namespace ToyRobotSim.Tests
         // --- Input handling ---
 
         [Fact]
-        public void Commands_AreCaseInsensitive()
+        public void Play_MixedCaseCommands_AreAccepted()
         {
             Assert.Equal("Robot is at [2,3] facing SOUTH", Run("place 2,4,south", "move", "report"));
         }
 
         [Fact]
-        public void Place_WithSpacesAfterCommas_Works()
+        public void Place_SpacesAfterCommas_PlacesRobot()
         {
             Assert.Equal("Robot is at [1,2] facing EAST", Run("PLACE 1, 2, EAST", "REPORT"));
         }
@@ -170,7 +134,7 @@ namespace ToyRobotSim.Tests
         [InlineData("MOVE 5")]
         [InlineData("LEFT abc")]
         [InlineData("JUMP")]
-        public void Unknown_OrExtraWords_AreIgnored(string command)
+        public void Play_UnknownCommandOrExtraWords_IsIgnored(string command)
         {
             Assert.Equal("Robot is at [0,0] facing NORTH", Run("PLACE 0,0,NORTH", command, "REPORT"));
         }
@@ -178,9 +142,24 @@ namespace ToyRobotSim.Tests
         [Theory]
         [InlineData("")]
         [InlineData("   ")]
-        public void Play_EmptyInput_DoesNotCrash(string command)
+        public void Play_EmptyInput_ReturnsNull(string command)
         {
             Assert.Null(new Game().Play(command));
+        }
+
+        // --- GRID (extra command, not in the brief) ---
+
+        [Fact]
+        public void Grid_AfterMove_ShowsRobotInNewPosition()
+        {
+            var game = new Game();
+            game.Play("PLACE 1,2,EAST");
+            game.Play("MOVE");
+
+            var lines = game.Play("GRID")!.Split(Environment.NewLine);
+
+            // Line 0 is the "N" label, so row y = 2 is line 3
+            Assert.Equal("W 2 [ ][ ][>][ ][ ] E", lines[3]);
         }
     }
 }
